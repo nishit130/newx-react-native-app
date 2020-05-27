@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions, Image} from 'react-native';
- 
+import { StyleSheet, View, Text, ScrollView , Dimensions, Image, TouchableOpacity} from 'react-native';
+import detailView from './detail';
+import {createStackNavigator} from '@react-navigation/stack';
+
+// import {createAppContainer} from 'react-navigation';
+import { NavigationContainer } from '@react-navigation/native';
 
 
-export default class homeScreen extends Component {
+
+class homeScreen extends React.Component  {
 
   
   render() {
-
-    
+    const { navigate } = this.props.navigation
     return (
       <ScrollView>
        <View>
@@ -39,33 +43,41 @@ export default class homeScreen extends Component {
          Headings
        </Text>
        <View style={styles.headlines}>
-          <Text style={styles.headlinesText}>
-            India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-          </Text>
+         <TouchableOpacity onPress={() => navigate('detail',{name: "Patel",})}>
+            <Text style={styles.headlinesText}>
+              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
+            </Text>
+          </TouchableOpacity>
           <Text style={styles.publisher}>
             Times of India
           </Text>
        </View>
        <View style={styles.headlines}>
-          <Text style={styles.headlinesText}>
-            India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-          </Text>
+       <TouchableOpacity onPress={() => navigate('detail')}>
+            <Text style={styles.headlinesText}>
+              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
+            </Text>
+          </TouchableOpacity>
           <Text style={styles.publisher}>
             Times of India
           </Text>
        </View>
        <View style={styles.headlines}>
-          <Text style={styles.headlinesText}>
-            India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-          </Text>
+       <TouchableOpacity onPress={() => navigate('detail')}>
+            <Text style={styles.headlinesText}>
+              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
+            </Text>
+          </TouchableOpacity>
           <Text style={styles.publisher}>
             Times of India
           </Text>
        </View>
        <View style={styles.headlines}>
-          <Text style={styles.headlinesText}>
-            India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-          </Text>
+       <TouchableOpacity onPress={() => navigate('detail',{name:'Nishit'})}>
+            <Text style={styles.headlinesText}>
+              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
+            </Text>
+          </TouchableOpacity>
           <Text style={styles.publisher}>
             Times of India
           </Text>
@@ -74,6 +86,16 @@ export default class homeScreen extends Component {
        
     )
   }
+}
+const stack =  createStackNavigator();
+function DetailStack() {
+  return (
+    
+    <stack.Navigator>
+      <stack.Screen name='home' component={homeScreen}/>
+      <stack.Screen name='detail' component={detailView}/>
+    </stack.Navigator>
+  )
 }
 var width = Dimensions.get('window').width; //full width
 var height = Dimensions.get('window').height; //full height
@@ -130,3 +152,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   }
 })
+// const AppContainer = createAppContainer(RootStack);
+export default class HomeView extends React.Component {
+  render() {
+    return (
+      
+        <DetailStack/>
+    )
+  }
+}

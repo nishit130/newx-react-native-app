@@ -8,7 +8,7 @@
 import 'react-native-gesture-handler';
 // import {createAppContainer} from 'react-navigation';
 import {NavigationContainer} from '@react-navigation/native';
-import homeScreen from './screens/home';
+import HomeView from './screens/home';
 import sportScreen from './screens/sports';
 import settingsScreen from './screens/settings';
 import React from 'react';
@@ -41,7 +41,7 @@ function MyTabs() {
       }}
     
     >
-      <Tab.Screen name="Home" component={homeScreen} />
+      <Tab.Screen name="Home" component={HomeView} />
       <Tab.Screen name="Sports" component={sportScreen} />
       <Tab.Screen name="settings" component={settingsScreen} />
     </Tab.Navigator>
