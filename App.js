@@ -8,6 +8,7 @@
 import 'react-native-gesture-handler';
 // import {createAppContainer} from 'react-navigation';
 import {NavigationContainer} from '@react-navigation/native';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import HomeView from './screens/home';
 import sportScreen from './screens/sports';
 import settingsScreen from './screens/settings';
@@ -36,14 +37,41 @@ function MyTabs() {
   return (
     <Tab.Navigator
       tabBarOptions= {{
-        activeTintColor : 'red',
-        activeBackgroundColor: '#4D19AC',
+        activeTintColor : '#4D19AC',
+        activeBackgroundColor: 'white',
       }}
     
     >
-      <Tab.Screen name="Home" component={HomeView} />
-      <Tab.Screen name="Sports" component={sportScreen} />
-      <Tab.Screen name="settings" component={settingsScreen} />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeView} 
+        options = {{
+          tabBarLabel: "Home",
+          tabBarIcon : ({color,size}) => (
+            <FontAwesome5  name="newspaper" color={color} size={size} />
+          )
+        }}
+      />
+      <Tab.Screen 
+        name="Sports" 
+        component={sportScreen} 
+        options = {{
+          tabBarLabel: 'sports',
+          tabBarIcon : ({color,size}) => (
+            <FontAwesome5 name="table-tennis" color={color} size={size} />
+          )
+        }}
+      />
+      <Tab.Screen 
+        name="settings" 
+        component={settingsScreen} 
+        options = {{
+          tabBarLabel : "settings",
+          tabBarIcon : ({color,size}) => (
+            <FontAwesome5 name="cog" color={color} size={size} />
+          )
+        }}
+        />
     </Tab.Navigator>
   );
 }
