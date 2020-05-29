@@ -13,7 +13,7 @@ export default class detailView extends Component {
   render() {
     //const { navigate } = this.props.navigation
     return (
-      <ScrollView style={{backgroundColor:'black'}}>
+      <ScrollView style={{backgroundColor:'#282828'}}>
           <Image style={styles.banner} source={{uri: this.state.urlToImage}}/>
           <Text style={styles.heading}>
             {this.state.title}
@@ -39,7 +39,7 @@ const styles =  StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     marginTop : 22,
-    color: "#3F1DC6",
+    color: "#C9BFF2",
     fontFamily: "sans-serief",
   },
   content: {
