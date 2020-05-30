@@ -6,12 +6,15 @@
  * @flow strict-local
  */
 import 'react-native-gesture-handler';
+import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 // import {createAppContainer} from 'react-navigation';
 import {NavigationContainer} from '@react-navigation/native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import HomeView from './screens/home';
 import sportScreen from './screens/sports';
 import settingsScreen from './screens/settings';
+import detailView from './screens/detail';
+import registerScreens from './screens/register';
 import React from 'react';
 import {
   SafeAreaView,
@@ -30,15 +33,17 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-
+//registerScreens();
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
   return (
     <Tab.Navigator
       tabBarOptions= {{
-        activeTintColor : '#4D19AC',
-        activeBackgroundColor: 'white',
+        inactiveBackgroundColor: '#4D4A4A',
+        activeTintColor : 'cyan',
+        inactiveTintColor: 'white',
+        activeBackgroundColor: '#4D4A4A',
       }}
     
     >

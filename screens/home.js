@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions, Image, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
-
+import AsyncStorage from '@react-native-community/async-storage'
 // import {createAppContainer} from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
+import {gestureHandlerRootHOC} from "react-native-gesture-handler"
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {PanResponder, Animated} from 'react-native'
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+
+
 // import JSON;
 
 
@@ -15,23 +21,14 @@ function wait(timeout) {
     setTimeout(resolve, timeout);
   });
 }
+
+
+
+
+
+
+
 function homeScreen(props)  {
-
-
-  // constructor(props){
-  //   super(props);
-  //   this.state = {
-  //     isloading : true,
-  //     data : [],
-  //   }
-    var intialValue = [
-      {
-
-      },
-      {
-
-      }
-    ]
     const [content, setContent] = React.useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
 
@@ -52,34 +49,61 @@ function homeScreen(props)  {
       // console.log(content)
       
     },[]);
-    //console.log(content)
-     // expected output: 'resolved'
-  // componentDidMount(){
-  //   return fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=10&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
-  //     .then((response) => response.json())
-  //     .then(async(responseJson) => {
-  //       //console.log(responseJson)
-  //       this.setState({
-  //         isloading : false,
-  //         data: responseJson.articles.results,
-  //       }, function(){
-  //           console.log("API SUCESS")
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }
 
+    const leftActions = () => {
+      <View>
+        <Text>
+          Bookmarks
+        </Text>
+      </View>
+    }
+
+    function onSwipeLeft(gestureState) {
+      console.log("swiped left");
+    }
+    
+    function onSwipe(gestureName, gestureState){
+      const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+      //this.setState({gestureName: gestureName});
+      switch (gestureName) {
+        case SWIPE_UP:
+          console.log("swipe!")
+          break;
+        case SWIPE_DOWN:
+          console.log("swipe!")
+          break;
+        case SWIPE_LEFT:
+          console.log("swipe!")
+          break;
+        case SWIPE_RIGHT:
+          console.log("swipe!")
+          break;
+      }
+    }
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80
+    };
+    
+    // AsyncStorage.setItem(
+    //   'storedData',
+    //   JSON.stringify(content),
+    // )
+    // AsyncStorage.getItem(
+    //   'storedData',
+    //   (err,result) => {
+    //     console.log(result);
+    //   }
+    // )
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
-      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri&dataType=news&resultType=articles&articlesCount=10&articlesSortBy=date&articleBodyLen=-1&apiKey=')
+      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=10&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
         .then((response) => response.json())
         .then((responseJson) => {
           //console.log(responseJson.articles.results)
           setContent(responseJson.articles.results);
           //setData([1,2,3,4])
-          console.log("ran use effects")
+          //onsole.log("ran use effects")
         })
       .catch((error) => {
         console.error(error);
@@ -93,8 +117,17 @@ function homeScreen(props)  {
     console.log("hello from home screen")
     const { navigate } = props.navigation
     return (
+      <>
+      <Swipeable renderLeftActions={leftActions}>
+                  <Text style={{height:100,backgroundColor:'pink'}}>swipe</Text>
+      </Swipeable>
       <ScrollView 
-        style={{backgroundColor:"#282828"}}
+        style={{backgroundColor:"#282828"}} //282828
+        onSwipeableOpen = {
+          () => {
+            console.log("swipe is working!")
+          }
+        }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -102,7 +135,7 @@ function homeScreen(props)  {
        <View  style={styles.visibleArea}>
          <ScrollView 
           horizontal={true}
-          contentContainerStyle={{ width: `300%` }}
+          contentContainerStyle={{ width: `400%` }}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={200}
           decelerationRate="fast"
@@ -128,29 +161,36 @@ function homeScreen(props)  {
        <Text style={styles.headingBanner}>
         Headlines
        </Text>
-       
        {
          //console.log(data)
           content.map((u, i) => {
-            if(u.image && i > 2) 
+            if(u.image && i > 4) 
             {
               return (
-                <ImageBackground key={i}   imageStyle={{ borderRadius: 21,opacity:0.4}}
-                source={{uri : u.image}} style={styles.headlines}>
-                  <TouchableOpacity onPress={() => navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
-                      <Text style={styles.headlinesText}>
-                        {u.title}
+                // <Swipeable 
+                //   key={i}
+                //   renderLeftActions={leftActions}
+                // >
+                
+                  <ImageBackground  imageStyle={{ borderRadius: 21,opacity:0.4}}
+                  source={{uri : u.image}} style={styles.headlines}>
+                    <TouchableOpacity onPress={() => navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
+                        <Text style={styles.headlinesText}>
+                          {u.title}
+                        </Text>
+                      </TouchableOpacity>
+                      <Text style={styles.publisher}>
+                        {u.source.title}
                       </Text>
-                    </TouchableOpacity>
-                    <Text style={styles.publisher}>
-                      {u.source.title}
-                    </Text>
-                </ImageBackground>
+                  </ImageBackground>
+                //</Swipeable>
               );
             }
           })
           }
+                
        </ScrollView>
+       </>
        
     )
   }
@@ -198,9 +238,11 @@ const styles = StyleSheet.create({
   topText: {
     //flex : 1,
     bottom: 0,
-    backgroundColor :"rgba(0,0,0,0)", 
+    backgroundColor :"rgba(212,212,180,0.5)", 
     fontSize: 20,
-    marginLeft : 20,
+    marginTop : 100,
+    marginBottom : 0,
+    paddingLeft : 20,
     fontFamily : "sans-serief",
     fontWeight :"bold",
     textAlignVertical:"bottom",
@@ -213,6 +255,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderRadius: 21,
     height: 158,
+    shadowColor: 'blue',
+    shadowOpacity: 0.3,
+    elevation: 50,
 
   },
   itemsImage: {
@@ -229,6 +274,17 @@ const styles = StyleSheet.create({
 
   },
   headlines:{
+    shadowColor: "blue",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.37,
+    shadowRadius: 7.49,
+    elevation: 12,
+    // box-shadow: 
+    // 12px 12px 16px 0 rgba(0, 0, 0, 0.25),
+    // -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
     //bac
     //opacity: 0.5,
     //backgroundColor : 'rgba(0,0,0,0.1)',
