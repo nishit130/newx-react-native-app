@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage'
 // import {createAppContainer} from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
-import {gestureHandlerRootHOC} from "react-native-gesture-handler"
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {PanResponder, Animated} from 'react-native'
+import News from '../component/news'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 
@@ -16,15 +15,12 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 
 // color for bottom tab navigator : #4D4A4A
+
 function wait(timeout) {
   return new Promise(resolve => {
     setTimeout(resolve, timeout);
   });
 }
-
-
-
-
 
 
 
@@ -49,42 +45,6 @@ function homeScreen(props)  {
       // console.log(content)
       
     },[]);
-
-    const leftActions = () => {
-      <View>
-        <Text>
-          Bookmarks
-        </Text>
-      </View>
-    }
-
-    function onSwipeLeft(gestureState) {
-      console.log("swiped left");
-    }
-    
-    function onSwipe(gestureName, gestureState){
-      const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
-      //this.setState({gestureName: gestureName});
-      switch (gestureName) {
-        case SWIPE_UP:
-          console.log("swipe!")
-          break;
-        case SWIPE_DOWN:
-          console.log("swipe!")
-          break;
-        case SWIPE_LEFT:
-          console.log("swipe!")
-          break;
-        case SWIPE_RIGHT:
-          console.log("swipe!")
-          break;
-      }
-    }
-    const config = {
-      velocityThreshold: 0.3,
-      directionalOffsetThreshold: 80
-    };
-    
     // AsyncStorage.setItem(
     //   'storedData',
     //   JSON.stringify(content),
@@ -109,88 +69,27 @@ function homeScreen(props)  {
         console.error(error);
       });
       console.log("refreshing");
-      //setContent(19);
-      //console.log(content);
-
       wait(2000).then(() => setRefreshing(false));
     }, [refreshing]);
+
+
     console.log("hello from home screen")
-    const { navigate } = props.navigation
+    // const { navigate } = props.navigation
     return (
-      <>
-      <Swipeable renderLeftActions={leftActions}>
-                  <Text style={{height:100,backgroundColor:'pink'}}>swipe</Text>
-      </Swipeable>
       <ScrollView 
-        style={{backgroundColor:"#282828"}} //282828
-        onSwipeableOpen = {
-          () => {
-            console.log("swipe is working!")
-          }
-        }
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-       <View  style={styles.visibleArea}>
-         <ScrollView 
-          horizontal={true}
-          contentContainerStyle={{ width: `400%` }}
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={200}
-          decelerationRate="fast"
-          >
-            {
-              content.map((u, i) => {
-                if(u.image)
-                {
-                  return (
-                    <View key={i} style={styles.items}>
-                      <ImageBackground style={styles.itemsImage} imageStyle={{borderRadius:21}} source={{uri:u.image }}>
-                        <TouchableOpacity onPress={() => navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
-                          <Text style={styles.topText}>{u.title}</Text>
-                        </TouchableOpacity>
-                      </ImageBackground>
-                    </View>
-                  );
-                }
-              })
-          }
-         </ScrollView>
-       </View>
-       <Text style={styles.headingBanner}>
-        Headlines
-       </Text>
-       {
-         //console.log(data)
-          content.map((u, i) => {
-            if(u.image && i > 4) 
-            {
-              return (
-                // <Swipeable 
-                //   key={i}
-                //   renderLeftActions={leftActions}
-                // >
-                
-                  <ImageBackground  imageStyle={{ borderRadius: 21,opacity:0.4}}
-                  source={{uri : u.image}} style={styles.headlines}>
-                    <TouchableOpacity onPress={() => navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
-                        <Text style={styles.headlinesText}>
-                          {u.title}
-                        </Text>
-                      </TouchableOpacity>
-                      <Text style={styles.publisher}>
-                        {u.source.title}
-                      </Text>
-                  </ImageBackground>
-                //</Swipeable>
-              );
-            }
-          })
-          }
-                
-       </ScrollView>
-       </>
+      style={{backgroundColor:"#282828"}} //282828
+      onSwipeableOpen = {
+      () => {
+          console.log("swipe is working!")
+      }
+      }
+      refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+  >   
+      <News content={content} navigation={props.navigation}/>
+      </ScrollView>
+      
        
     )
   }
