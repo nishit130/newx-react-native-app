@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
-import detailView from './detail';
+import { StyleSheet, View,Image, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
+import detailView from '../screens/detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage'
 // import {createAppContainer} from 'react-navigation';
@@ -8,38 +8,112 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import {PanResponder, Animated} from 'react-native'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import Bookmarklist from '../component/bookmark';
 
-class settingView extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      data : {}
-    }
-  }
-  componentDidMount(){
-    AsyncStorage.getItem(
-      'storedData' 
-    ).then(res => this.setState({data : JSON.parse(res)}))
-  }
 
-  render() {
-    return (
-       <View  >
-           <ImageBackground imageStyle={{ borderRadius: 21,opacity:0.4}}
-            source={{uri : this.state.data.image}} style={styles.headlines}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: this.state.data.body ,title: this.state.data.title,image : this.state.data.image})}>
-                    <Text style={styles.headlinesText}>
-                    {this.state.data.title}
-                    </Text>
-                </TouchableOpacity>
-                <Text style={styles.publisher}>
-                    {console.log(this.state.data.body)}
-                </Text>
-            </ImageBackground>
-       </View>
-    )
-  }
+
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
 }
+
+
+
+function settingView(props) {
+  
+  const [content, setContent] = React.useState([]);
+  let content2= [];
+  const [refreshing, setRefreshing] = React.useState(false);
+  React.useEffect( () => {
+      AsyncStorage.getAllKeys((err,keys) => {
+      }).then(keys => {
+        AsyncStorage.multiGet(keys,(err,stores) => {
+          stores.map((result,i,store) => {
+            //console.log(store[i][1])
+            var arr = new Array();
+            arr.push(JSON.parse(store[i][1]));
+            var dulplicate  = content
+            var joined = dulplicate.concat(arr);
+            //console.log("joined",joined)
+            setContent(joined)
+            content2.push(JSON.parse(store[i][1]))
+            //console.log("content2 : ",content2)
+          })
+        })
+      })
+    //});
+    return () => clearInterval();
+    // setContent({hello: "name"});
+    // console.log(content)
+    
+  },[]);
+  //console.log(`"content from main file: ${content}`)
+    // AsyncStorage.getAllKeys((err,keys) => {
+    // }).then(keys => {
+    //   AsyncStorage.multiGet(keys,(err,stores) => {
+    //     stores.map((result,i,store) => {
+    //       //console.log(store[i][1])
+    //       var arr = new Array();
+    //       arr.push(JSON.parse(store[i][1]));
+    //       var joined = this.state.data.concat(arr);
+    //       this.setState({data : joined})
+    //     })
+    //   })
+    // })
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      AsyncStorage.getAllKeys((err,keys) => {
+      }).then(keys => {
+        AsyncStorage.multiGet(keys,(err,stores) => {
+          
+        }).then((stores) => {
+          stores.map((result,i,store) => {
+            //console.log(store[i][1])
+            var arr = new Array();
+            arr.push(JSON.parse(store[i][1]));
+            var dulplicate  = content
+            var joined = dulplicate.concat(arr);
+            //console.log("joined",joined)
+            setContent(joined)
+            content2.push(JSON.parse(store[i][1]))
+            //console.log("content2 : ",content)
+          })
+        })
+      })
+      console.log("refreshing");
+      wait(2000).then(() => setRefreshing(false));
+    }, [refreshing]);
+  // componentDidMount(){
+  //   //AsyncStorage.clear()
+  //   AsyncStorage.getAllKeys((err,keys) => {
+  //   }).then(keys => {
+  //     AsyncStorage.multiGet(keys,(err,stores) => {
+  //       stores.map((result,i,store) => {
+  //         //console.log(store[i][1])
+  //         var arr = new Array();
+  //         arr.push(JSON.parse(store[i][1]));
+  //         var joined = this.state.data.concat(arr);
+  //         this.setState({data : joined})
+  //       })
+  //     })
+  //   })
+  // }
+
+
+    //console.log(content2)
+    return (
+      
+       <ScrollView 
+        style={{backgroundColor:"wheat"}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+         <Bookmarklist data={content} navigation={props.navigation}/>
+       </ScrollView>
+    );
+  }
 
 const stack =  createStackNavigator();
 function DetailStack() {

@@ -27,27 +27,29 @@ export default class News extends React.Component{
                 null,
                 {dx : this.pan[index].x}
               ], {
+                useNativeDriver: false,
                 listener: (evt,gestureState) => {
                   if(gestureState.dx >100 || gestureState.dx < -100)
                   {
                     AsyncStorage.setItem(
-                      'storedData',
+                      index.toString(),
                       JSON.stringify(this.props.content[index]),
                     )
                     AsyncStorage.getItem(
-                      'storedData',
+                      index.toString(),
                       (err,result) => {
-                        console.log(result);
+                        //console.log(result);
                       }
                     )
                     console.log("bookmark");
                     Animated.spring(this.pan[index],{
-                      toValue: 0
+                      toValue: 0,
+                      useNativeDriver: false,
                     },{useNativeDriver: false}).start();
                   }
                 },
                 useNativeDriver : false
-              }),
+              },),
               onPanResponderRelease : () => {
                 Animated.spring(this.pan[index],{
                   toValue: 0
