@@ -31,8 +31,9 @@ export default class News extends React.Component{
                 listener: (evt,gestureState) => {
                   if(gestureState.dx >100 || gestureState.dx < -100)
                   {
+
                     AsyncStorage.setItem(
-                      index.toString(),
+                      this.props.content[index].uri.toString(),
                       JSON.stringify(this.props.content[index]),
                     )
                     AsyncStorage.getItem(
@@ -164,6 +165,8 @@ const styles = StyleSheet.create({
     fontFamily: "Numans-Regular",
   },
   visibleArea : {
+    //position: "absolute",
+    top: 0,
     width : width,
     height: 168,
   },

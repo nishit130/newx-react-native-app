@@ -23,29 +23,26 @@ function wait(timeout) {
 function settingView(props) {
   
   const [content, setContent] = React.useState([]);
+  const [keys, setKeys] = React.useState([])
   let content2= [];
   const [refreshing, setRefreshing] = React.useState(false);
-  React.useEffect( () => {
-      AsyncStorage.getAllKeys((err,keys) => {
-      }).then(keys => {
-        AsyncStorage.multiGet(keys,(err,stores) => {
-          stores.map((result,i,store) => {
-            //console.log(store[i][1])
-            var arr = new Array();
-            arr.push(JSON.parse(store[i][1]));
-            var dulplicate  = content
-            var joined = dulplicate.concat(arr);
-            //console.log("joined",joined)
-            setContent(joined)
-            content2.push(JSON.parse(store[i][1]))
-            //console.log("content2 : ",content2)
-          })
-        })
-      })
+
+  
+  
+React.useEffect( async () => {
+    
+    let key = await AsyncStorage.getAllKeys()
+    setContent(key)
+      //setKeys(key)
+      //console.log("he");
+      
+      //console.log("ran effect sport");
+      
+    
     //});
-    return () => clearInterval();
+     return () => clearInterval();
     // setContent({hello: "name"});
-    // console.log(content)
+    //console.log(keys)
     
   },[]);
   //console.log(`"content from main file: ${content}`)
@@ -61,27 +58,11 @@ function settingView(props) {
     //     })
     //   })
     // })
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = React.useCallback(async () => {
       setRefreshing(true);
-      AsyncStorage.getAllKeys((err,keys) => {
-      }).then(keys => {
-        AsyncStorage.multiGet(keys,(err,stores) => {
-          
-        }).then((stores) => {
-          stores.map((result,i,store) => {
-            //console.log(store[i][1])
-            var arr = new Array();
-            arr.push(JSON.parse(store[i][1]));
-            var dulplicate  = content
-            var joined = dulplicate.concat(arr);
-            //console.log("joined",joined)
-            setContent(joined)
-            content2.push(JSON.parse(store[i][1]))
-            //console.log("content2 : ",content)
-          })
-        })
-      })
-      console.log("refreshing");
+      let key = await AsyncStorage.getAllKeys()
+      setContent(key)
+      console.log("refreshing", content);
       wait(2000).then(() => setRefreshing(false));
     }, [refreshing]);
   // componentDidMount(){
@@ -100,7 +81,7 @@ function settingView(props) {
   //   })
   // }
 
-
+    
     //console.log(content2)
     return (
       
@@ -110,7 +91,7 @@ function settingView(props) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-         <Bookmarklist data={content} navigation={props.navigation}/>
+         <Bookmarklist  data={content} navigation={props.navigation}/>
        </ScrollView>
     );
   }

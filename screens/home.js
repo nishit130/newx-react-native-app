@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -8,6 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import {PanResponder, Animated} from 'react-native'
 import News from '../component/news'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 
@@ -94,28 +95,52 @@ function homeScreen(props)  {
     )
   }
 const stack =  createStackNavigator();
+function lightMode(){
+  console.log("light Mode")
+}
 function DetailStack() {
   return (
     
-    <stack.Navigator>
+    <stack.Navigator >
       <stack.Screen name='News App' component={homeScreen}
         options= {{
-          headerStyle : {
-            backgroundColor : "#282828",
-            //marginLeft : 60,
-            //fontFamily : "Numans-Regular",
+          title: "News App",
+          header: ({ scene, previous, navigation }) => {
+            const { options } = scene.descriptor;
+            return (
+              <View style={styles.HeaderStyles}>
+                <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:"white"}}> {options.title} </Text>
+                <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={"white"} />
+                
+                {/* <FontAwesome5 name="moon" color="black" size="20" /> */}
+              </View>
+            )
           },
-          //headerTransparent : "true",
-          headerTintColor : "white",
-          headerTitle: "News App",
+          // headerStyle : {
+          //   backgroundColor : "#282828",
+          //   //marginLeft : 60,
+          //   //fontFamily : "Numans-Regular",
+          // },
+          // //headerTransparent : "true",
+          // headerTintColor : "white",
+          // headerTitle: "News App",
         }}
       />
       <stack.Screen name='Back' component={detailView}
         options = {{
-          headerStyle : {
-            backgroundColor : "#282828",
-          },
-          headerTintColor : "white",
+          title: "Back",
+          header: ({ scene, previous, navigation }) => {
+            const { options } = scene.descriptor;
+            return (
+              <View style={styles.HeaderStyles}>
+                <FontAwesome5 style={{flex:1,marginLeft:20,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "left",color:"white"}} onPress={() => navigation.goBack()} name="arrow-left" size={20} color={"white"} />
+                <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "left",color:"white"}}> {options.title} </Text>
+                <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={"white"} />
+                
+                {/* <FontAwesome5 name="moon" color="black" size="20" /> */}
+              </View>
+            )
+          }
         }}
       />
     </stack.Navigator>
@@ -124,6 +149,14 @@ function DetailStack() {
 var width = Dimensions.get('window').width; //full width
 var height = Dimensions.get('window').height; //full height
 const styles = StyleSheet.create({
+  HeaderStyles: {
+    //flex: 1,
+    paddingTop: 20,
+    paddingBottom: 10,
+    flexDirection: "row",
+    //height: 100,
+    backgroundColor: "#282828",
+  },
   headingText: {
     margin: 10,
     marginLeft: 30,

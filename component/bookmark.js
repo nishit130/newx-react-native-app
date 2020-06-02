@@ -7,12 +7,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import {PanResponder, Animated} from 'react-native'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import { ThemeConsumer } from 'styled-components';
 
 export default class Bookmarklist extends Component {
   constructor(props){
     super(props);
-    //console.log("data prop",this.props.data)
-
+    this.state = {
+      data : new Array(),
+      prevProps: [],
+      prevState: [],
+    }
+    
+    console.log("data recived in bookmark: ",this.props.data);
+    
+    // AsyncStorage.multiGet(this.props.keys,(err,stores) => {
+        
+    // }).then((stores) => {stores.map((result,i,store) => {
+    //   //console.log(store[i][1])
+    //   var arr = new Array();
+    //   arr.push(JSON.parse(store[i][1]));
+    //   var joined = this.state.data.concat(arr);
+    //   this.setState({data : joined})
+    // })}) 
 
     // AsyncStorage.getAllKeys((err,keys) => {
     // }).then(keys => {
@@ -27,49 +43,111 @@ export default class Bookmarklist extends Component {
     //   })
     // })
   }
-//   componentDidMount(){
-//     //AsyncStorage.clear()
-//     AsyncStorage.getAllKeys((err,keys) => {
-//     }).then(keys => {
-//       AsyncStorage.multiGet(keys,(err,stores) => {
-//         stores.map((result,i,store) => {
-//           //console.log(store[i][1])
-//           var arr = new Array();
-//           arr.push(JSON.parse(store[i][1]));
-//           var joined = this.state.data.concat(arr);
-//           this.setState({data : joined})
-//         })
-//       })
-//     })
-//   }
+  componentDidMount(){
+    //AsyncStorage.clear()
+     AsyncStorage.multiGet(this.props.data).then((res) => {
+      let arr = new Array();
+      let joined = [];
+      res.map((result,i,store) => {
+
+        arr.push(JSON.parse(store[i][1]));
+        //console.log(store[i][1])
+        joined = this.state.data.concat(arr);
+        //console.log(joined)
+      })
+      this.setState({data : joined})
+    })
+    console.log("data recived in bookmark: ",this.props.data);
+
+  }
+
+  // getSnapshotBeforeUpdate(prevProps, prevState)
+  // {
+  //     this.setState({
+  //       prevProps: prevProps,
+  //       prevState: prevState,
+  //     })
+  // }
+  ne
+  shouldComponentUpdate(nextprops,state){
+
+      console.log("data length ",this.state.data.length)
+    if(this.props != nextprops)
+    {
+      AsyncStorage.getAllKeys((err,keys) => {
+      }).then(keys => {
+        AsyncStorage.multiGet(keys,(err,stores) => {
+          let arr = new Array();
+          let joined = new Array();
+          stores.map((result,i,store) => {
+            //console.log(store[i][1])
+            arr.push(JSON.parse(store[i][1]));
+            joined = this.state.data.concat(arr);
+            
+          })
+          this.setState({data : arr})
+        })
+      })
+      return true;
+    }
+    else{
+      return false;
+    }
+    
+    // AsyncStorage.multiGet(nextprops.data).then((res) => {
+    //   let arr = new Array();
+    //   let joined = [];
+    //   res.map((result,i,store) => {
+
+    //     arr.push(JSON.parse(store[i][1]));
+    //     //console.log(store[i][1])
+    //     joined = this.state.data.concat(arr);
+    //     //console.log(joined)
+    //   })
+    //   this.setState({data : joined})
+    // }).catch((err)=> console.log(err))
+  }
 
 
   render() {
+    //console.log(this.state.data.length)
+
+    // AsyncStorage.multiGet(this.props.keys,(err,stores) => {
+        
+    // }).then((stores) => {stores.map((result,i,store) => {
+    //   //console.log(store[i][1])
+    //   var arr = new Array();
+    //   arr.push(JSON.parse(store[i][1]));
+    //   var joined = this.state.data.concat(arr);
+    //   this.setState({data : joined})
+    // })}) 
     //console.log("data prop",this.props.data[0].uri)
+    //console.log("data prop",this.state.data)
 
     return (
       
        <ScrollView  style={{backgroundColor:"wheat"}}>
          {
-          //  this.state.props.data.map((u,i) => {
-          //    if(i>1)
-          //    {
-          //      console.log("eor")
-          //     // return(
-          //     //   <ImageBackground key={i} imageStyle={{ borderRadius: 21,opacity:0.4}}
-          //     //                     source={{uri : u.image}} style={styles.headlines}>
-          //     //                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
-          //     //                             <Text style={styles.headlinesText}>
-          //     //                             {u.title}
-          //     //                             </Text>
-          //     //                         </TouchableOpacity>
-          //     //                         <Text style={styles.publisher}>
-          //     //                             {u.title}
-          //     //                         </Text>
-          //     //   </ImageBackground>
-          //     //);
-          //    }
-          //  })
+           
+           //console.log("data lenght ",this.state.data.length)
+           
+           this.state.data.map((u,i) => {
+              //console.log(u.title)
+              return(
+                <ImageBackground key={i} imageStyle={{ borderRadius: 21,opacity:0.4}}
+                                  source={{uri : u.image}} style={styles.headlines}>
+                                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
+                                          <Text style={styles.headlinesText}>
+                                          {u.title}
+                                          </Text>
+                                      </TouchableOpacity>
+                                      <Text style={styles.publisher}>
+                                          {u.title}
+                                      </Text>
+                </ImageBackground>
+              );
+              
+            })
           
           }
        </ScrollView>

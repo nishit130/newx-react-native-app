@@ -71,9 +71,9 @@ function MyTabs() {
         name="settings" 
         component={settingsScreen} 
         options = {{
-          tabBarLabel : "settings",
+          tabBarLabel : "Offline",
           tabBarIcon : ({color,size}) => (
-            <FontAwesome5 name="cog" color={color} size={size} />
+            <FontAwesome5 name="download" color={color} size={size} />
           )
         }}
         />
