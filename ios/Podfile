@@ -79,6 +79,8 @@ target 'newsapp' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RNSharedElement', :path => '../node_modules/react-native-shared-element'
+
   target 'newsappTests' do
     inherit! :complete
     # Pods for testing

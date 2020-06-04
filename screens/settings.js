@@ -38,7 +38,6 @@ React.useEffect( async () => {
       
       //console.log("ran effect sport");
       
-    
     //});
      return () => clearInterval();
     // setContent({hello: "name"});

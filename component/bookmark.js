@@ -19,44 +19,50 @@ export default class Bookmarklist extends Component {
     }
     
     console.log("data recived in bookmark: ",this.props.data);
-    
-    // AsyncStorage.multiGet(this.props.keys,(err,stores) => {
-        
-    // }).then((stores) => {stores.map((result,i,store) => {
-    //   //console.log(store[i][1])
-    //   var arr = new Array();
-    //   arr.push(JSON.parse(store[i][1]));
-    //   var joined = this.state.data.concat(arr);
-    //   this.setState({data : joined})
-    // })}) 
+    AsyncStorage.getAllKeys((err,keys) => {
+    }).then(keys => {
+      AsyncStorage.multiGet(keys,(err,stores) => {
+        let arr = new Array();
+        let joined = new Array();
+        stores.map((result,i,store) => {
+          //console.log(store[i][1])
+          arr.push(JSON.parse(store[i][1]));
+          joined = this.state.data.concat(arr);
+          
+        })
+        this.setState({data : arr})
+      })
+    })
 
-    // AsyncStorage.getAllKeys((err,keys) => {
-    // }).then(keys => {
-    //   AsyncStorage.multiGet(keys,(err,stores) => {
-    //     stores.map((result,i,store) => {
-    //       //console.log(store[i][1])
-    //       var arr = new Array();
-    //       arr.push(JSON.parse(store[i][1]));
-    //       var joined = this.state.data.concat(arr);
-    //       this.setState({data : joined})
-    //     })
-    //   })
-    // })
   }
   componentDidMount(){
     //AsyncStorage.clear()
-     AsyncStorage.multiGet(this.props.data).then((res) => {
-      let arr = new Array();
-      let joined = [];
-      res.map((result,i,store) => {
-
-        arr.push(JSON.parse(store[i][1]));
-        //console.log(store[i][1])
-        joined = this.state.data.concat(arr);
-        //console.log(joined)
+    AsyncStorage.getAllKeys((err,keys) => {
+    }).then(keys => {
+      AsyncStorage.multiGet(keys,(err,stores) => {
+        let arr = new Array();
+        let joined = new Array();
+        stores.map((result,i,store) => {
+          //console.log(store[i][1])
+          arr.push(JSON.parse(store[i][1]));
+          joined = this.state.data.concat(arr);
+          
+        })
+        this.setState({data : arr})
       })
-      this.setState({data : joined})
     })
+    //  AsyncStorage.multiGet(this.props.data).then((res) => {
+    //   let arr = new Array();
+    //   let joined = [];
+    //   res.map((result,i,store) => {
+
+    //     arr.push(JSON.parse(store[i][1]));
+    //     //console.log(store[i][1])
+    //     joined = this.state.data.concat(arr);
+    //     //console.log(joined)
+    //   })
+    //   this.setState({data : joined})
+    // })
     console.log("data recived in bookmark: ",this.props.data);
 
   }
@@ -68,7 +74,6 @@ export default class Bookmarklist extends Component {
   //       prevState: prevState,
   //     })
   // }
-  ne
   shouldComponentUpdate(nextprops,state){
 
       console.log("data length ",this.state.data.length)

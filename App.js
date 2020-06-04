@@ -23,6 +23,7 @@ import {
   View,
   Text,
   StatusBar,
+  Image,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {
@@ -73,7 +74,7 @@ function MyTabs() {
         options = {{
           tabBarLabel : "Offline",
           tabBarIcon : ({color,size}) => (
-            <FontAwesome5 name="download" color={color} size={size} />
+            <FontAwesome5 name="bookmark" size={size} color={color}/>
           )
         }}
         />

@@ -1,26 +1,28 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, Dimensions , ScrollView} from 'react-native';
+import { SharedElement } from 'react-navigation-shared-element';
  
 export default class detailView extends Component {
   constructor(props){
     super(props)
     this.state = {
       content : props.route.params.content,
-      title : props.route.params.title,
-      urlToImage : props.route.params.image,
     }
+    //console.log("content from details page",this.state.content)
   }
   render() {
     //const { navigate } = this.props.navigation
     return (
       <ScrollView style={{backgroundColor:'#282828'}}>
-          <Image style={styles.banner} source={{uri: this.state.urlToImage}}/>
+          <SharedElement id={this.state.content.uri}>
+          <Image style={styles.banner} source={{uri: this.state.content.image}}/>
+          </SharedElement>
           <Text style={styles.heading}>
-            {this.state.title}
+            {this.state.content.title}
 
          </Text>
           <Text style={styles.content}>
-            {this.state.content}
+            {this.state.content.body}
           </Text>
        </ScrollView>
     )
@@ -30,10 +32,10 @@ var width = Dimensions.get('window').width; //full width
 var height = Dimensions.get('window').height; //full height
 const styles =  StyleSheet.create({
   banner : {
-    margin: 10,
-    width : width - 20,
-    height : 221,
-    borderRadius : 21,  
+    //margin: 10,
+    width : width,
+    height : 261,
+    //borderRadius : 21,  
   },
   heading: {
     fontSize: 20,

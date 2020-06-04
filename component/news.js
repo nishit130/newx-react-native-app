@@ -1,9 +1,11 @@
 import styled from 'styled-components/native'
 import React ,{Component} from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent, Image} from 'react-native';
 import {PanResponder, Animated } from 'react-native'
 import Swipeout from 'react-native-swipeout';
 import AsyncStorage from '@react-native-community/async-storage'
+import { SharedElement } from 'react-navigation-shared-element';
+
 
 
 export default class News extends React.Component{
@@ -12,13 +14,27 @@ export default class News extends React.Component{
         {
             super(props);
 
-            this.dataDrag = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+            this.dataDrag = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
             this.pan = this.dataDrag.map( () => new Animated.ValueXY() );
             this.state = {
-              showDraggable   : true, 
+              showDraggable   : true,
+              display : {
+                display : "flex",
+              },
+
                
             }  
             
+        }
+        changeScreens(u){
+          //console.log(u);
+          this.props.navigation.navigate('Back',{content: u});
+          this.setState({
+            display : {
+              display : "none",
+            }
+          })
+          
         }
         getResponder(index){
           return PanResponder.create({
@@ -59,18 +75,22 @@ export default class News extends React.Component{
           });
         }
     render(){
-        console.log("hello")
+        //console.log("hello")
         //const { navigate } = this.props.navigation
         // const navigation = useNavigation();
-        var swipeOutButtons = [
-          {
-            text : "buttons",
-          }
-        ]
+        
+        
         return(
 
 
            <View>
+             {/* <View style={{flex: 1,flexDirection:'row',height: 137,}}>
+               <Image style={{flex:6,margin:10,height: 130,borderRadius:21, width: 100}} source={{uri : 'https://dw-wp-production.imgix.net/2020/06/Ocasio-Cortez-scaled.jpg?w=1200&h=675&ixlib=react-8.6.4'}} />
+
+               <Text style={[styles.headlinesText, {flex:8,color:"white",fontWeight:"100"}]}>
+                    The 2020 rebellion has deep roots -- and it can't be resolved  by electing joe Biden
+               </Text>
+             </View> */}
             <View  style={styles.visibleArea}>
                 <ScrollView 
                 horizontal={true}
@@ -78,6 +98,7 @@ export default class News extends React.Component{
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={200}
                 decelerationRate="fast"
+                pagingEnabled={true}
                 >
                     {
                         // navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})
@@ -85,13 +106,13 @@ export default class News extends React.Component{
                         if(u.image)
                         {
                         return (
-                            <View key={i} style={styles.items}>
-                            <ImageBackground style={styles.itemsImage} imageStyle={{borderRadius:21}} source={{uri:u.image }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
-                                <Text style={styles.topText}>{u.title}</Text>
-                                </TouchableOpacity>
-                            </ImageBackground>
-                            </View>
+                            <TouchableOpacity key={i} style={styles.items} onPress={() => this.changeScreens(u)}>
+                              <SharedElement id={u.uri}>
+                              <ImageBackground style={styles.itemsImage} source={{uri:u.image }}>
+                                  <Text style={[styles.topText]}>{u.title}</Text>
+                              </ImageBackground>
+                              </SharedElement>
+                            </TouchableOpacity>
                         );
                         }
                     })
@@ -116,18 +137,31 @@ export default class News extends React.Component{
                         ]}}
                         {...this.getResponder(i).panHandlers}
                         >
-
-                                <ImageBackground imageStyle={{ borderRadius: 21,opacity:0.4}}
+                              {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u})}>
+                                <SharedElement id={u.uri}>
+                                <ImageBackground imageStyle={{opacity:0.4}}
                                 source={{uri : u.image}} style={styles.headlines}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
                                         <Text style={styles.headlinesText}>
                                         {u.title}
                                         </Text>
-                                    </TouchableOpacity>
                                     <Text style={styles.publisher}>
                                         {u.source.title}
                                     </Text>
                                 </ImageBackground>
+                                </SharedElement>
+                              </TouchableOpacity> */}
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u})}>
+
+                              <View style={{flex: 1,flexDirection:'row',height: 137,marginTop:8,marginLeft:10}}>
+                                  <SharedElement id={u.uri}>
+                                    <Image source={{uri : u.image}} style={{flex:3,height: 130,borderRadius:21, width: 200}}  />
+                                  </SharedElement>
+                                  <Text style={[styles.headlinesText, {flex:9,color:"white",fontWeight:"100"}]}>
+                                        {u.title}
+                                  </Text>
+                              </View>
+                              </TouchableOpacity>
+
                         </Animated.View>
                     );
                     }
@@ -188,7 +222,7 @@ const styles = StyleSheet.create({
     marginLeft : 8,
     marginRight: 8,
     marginTop: 8,
-    borderRadius: 21,
+    //borderRadius: 21,
     height: 158,
     shadowColor: 'blue',
     shadowOpacity: 0.3,
@@ -199,7 +233,7 @@ const styles = StyleSheet.create({
   itemsImage: {
     width : width- 16,
     height: 158,
-    borderRadius: 21,
+    //borderRadius: 21,
   },
   headingBanner: {
     fontSize: 25,
@@ -230,12 +264,12 @@ const styles = StyleSheet.create({
     marginLeft : 8,
     marginRight: 8,
     marginTop: 13,
-    borderRadius : 21,
+    //borderRadius : 21,
     //overlayColor : '#282828',
     backgroundColor: "#C3C1C1",
   },
   headlinesText: {
-    fontSize: 20,
+    fontSize: 18,
     marginLeft: 20,
     marginTop : 10,
     borderRadius: 21,

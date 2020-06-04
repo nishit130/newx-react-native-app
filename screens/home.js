@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
+import {} from 'react-navigation-shared-element'
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element'
 import AsyncStorage from '@react-native-community/async-storage'
 // import {createAppContainer} from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
@@ -30,7 +32,7 @@ function homeScreen(props)  {
     const [refreshing, setRefreshing] = React.useState(false);
 
     React.useEffect( () => {
-      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=10&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
+      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=20&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
         .then((response) => response.json())
         .then((responseJson) => {
           //console.log(responseJson.articles.results)
@@ -58,7 +60,7 @@ function homeScreen(props)  {
     // )
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
-      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=10&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
+      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=20&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
         .then((response) => response.json())
         .then((responseJson) => {
           //console.log(responseJson.articles.results)
@@ -94,47 +96,47 @@ function homeScreen(props)  {
        
     )
   }
-const stack =  createStackNavigator();
+const stack =  createSharedElementStackNavigator();
 function lightMode(){
   console.log("light Mode")
 }
 function DetailStack() {
   return (
     
-    <stack.Navigator >
+    <stack.Navigator 
+    
+    >
       <stack.Screen name='News App' component={homeScreen}
         options= {{
           title: "News App",
+          //headerTransparent:true,
           header: ({ scene, previous, navigation }) => {
             const { options } = scene.descriptor;
             return (
               <View style={styles.HeaderStyles}>
-                <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:"white"}}> {options.title} </Text>
+                <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:"white",fontWeight:"bold"}}> {options.title} </Text>
                 <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={"white"} />
-                
-                {/* <FontAwesome5 name="moon" color="black" size="20" /> */}
-              </View>
+                </View>
             )
           },
-          // headerStyle : {
-          //   backgroundColor : "#282828",
-          //   //marginLeft : 60,
-          //   //fontFamily : "Numans-Regular",
-          // },
-          // //headerTransparent : "true",
-          // headerTintColor : "white",
-          // headerTitle: "News App",
         }}
       />
       <stack.Screen name='Back' component={detailView}
+        sharedElements={(route, otherRoute, showing) => {
+          //console.log(route.params.content.uri)
+          return [route.params.content.uri];
+        }}
         options = {{
           title: "Back",
+          headerTransparent:true,
+          cardStyleInterpolator: ({current : {progress}}) => {
+              return {cardStyle : { opacity : progress}}
+          },
           header: ({ scene, previous, navigation }) => {
             const { options } = scene.descriptor;
             return (
-              <View style={styles.HeaderStyles}>
-                <FontAwesome5 style={{flex:1,marginLeft:20,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "left",color:"white"}} onPress={() => navigation.goBack()} name="arrow-left" size={20} color={"white"} />
-                <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "left",color:"white"}}> {options.title} </Text>
+              <View style={{flexDirection:"row",paddingTop: 20,paddingBottom: 10,}}>
+                <FontAwesome5 style={{flex:9,marginLeft:20,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "left",color:"black"}} onPress={() => navigation.goBack()} name="arrow-left" size={20} color={"white"} />
                 <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={"white"} />
                 
                 {/* <FontAwesome5 name="moon" color="black" size="20" /> */}
@@ -150,12 +152,13 @@ var width = Dimensions.get('window').width; //full width
 var height = Dimensions.get('window').height; //full height
 const styles = StyleSheet.create({
   HeaderStyles: {
-    //flex: 1,
+    //flex:10,
     paddingTop: 20,
     paddingBottom: 10,
     flexDirection: "row",
     //height: 100,
     backgroundColor: "#282828",
+    //zIndex:2,
   },
   headingText: {
     margin: 10,
@@ -164,8 +167,10 @@ const styles = StyleSheet.create({
     fontFamily: "Numans-Regular",
   },
   visibleArea : {
+    top:0,
     width : width,
     height: 168,
+    zIndex: -1,
   },
   topText: {
     //flex : 1,
@@ -184,18 +189,22 @@ const styles = StyleSheet.create({
     //borderWidth: 2,
     marginLeft : 8,
     marginRight: 8,
-    marginTop: 8,
-    borderRadius: 21,
+    top:0,
+    //marginTop: 8,
     height: 158,
     shadowColor: 'blue',
     shadowOpacity: 0.3,
     elevation: 50,
+    zIndex: -1,
+
 
   },
   itemsImage: {
     width : width- 16,
     height: 158,
-    borderRadius: 21,
+    top:0,
+    // zIndex: -1,
+
   },
   headingBanner: {
     fontSize: 25,
