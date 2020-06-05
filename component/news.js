@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 import React ,{Component} from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent, Image} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList,TouchableWithoutFeedback, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent, Image} from 'react-native';
 import {PanResponder, Animated } from 'react-native'
 import Swipeout from 'react-native-swipeout';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -21,20 +21,68 @@ export default class News extends React.Component{
               display : {
                 display : "flex",
               },
-
-               
+              darkMode : this.props.darkMode,
+              bgColor : "",
+              textcolor : "pink",
             }  
             
         }
         changeScreens(u){
           //console.log(u);
-          this.props.navigation.navigate('Back',{content: u});
+          this.props.navigation.navigate('Back',{content: u, darkMode : this.state.darkMode});
           this.setState({
             display : {
               display : "none",
-            }
+            },
           })
           
+        }
+        shouldComponentUpdate(nextprops, state)
+        {
+          //console.log(nextprops);
+          
+          if(this.props != nextprops){
+            if(!nextprops.darkMode)
+            {
+                this.setState({
+                  darkMode: nextprops.darkMode,
+                  bgColor : "#282828",
+                  textcolor : "white",
+                })
+                console.log("light mode from news")
+            }
+            else{
+              this.setState({
+                darkMode: nextprops.darkMode,
+                bgColor : "#C3C1C1",
+                textcolor : "black",
+              })
+            }
+            return true;
+          }
+          else{
+            return false;
+          }
+        }
+        componentDidMount(){
+          
+          if(!this.props.darkMode)
+          {
+              this.setState({
+                darkMode: this.props.darkMode,
+                bgColor : "#282828",
+                textcolor : "white",
+              })
+              console.log("cdm light mode from news")
+          }
+          else{
+            this.setState({
+              darkMode: this.props.darkMode,
+              bgColor : "#C3C1C1",
+              textcolor : "black",
+            })
+            console.log("cdm dark mode from news")
+          }
         }
         getResponder(index){
           return PanResponder.create({
@@ -84,13 +132,6 @@ export default class News extends React.Component{
 
 
            <View>
-             {/* <View style={{flex: 1,flexDirection:'row',height: 137,}}>
-               <Image style={{flex:6,margin:10,height: 130,borderRadius:21, width: 100}} source={{uri : 'https://dw-wp-production.imgix.net/2020/06/Ocasio-Cortez-scaled.jpg?w=1200&h=675&ixlib=react-8.6.4'}} />
-
-               <Text style={[styles.headlinesText, {flex:8,color:"white",fontWeight:"100"}]}>
-                    The 2020 rebellion has deep roots -- and it can't be resolved  by electing joe Biden
-               </Text>
-             </View> */}
             <View  style={styles.visibleArea}>
                 <ScrollView 
                 horizontal={true}
@@ -101,7 +142,6 @@ export default class News extends React.Component{
                 pagingEnabled={true}
                 >
                     {
-                        // navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})
                     this.props.content.map((u, i) => {
                         if(u.image)
                         {
@@ -119,7 +159,7 @@ export default class News extends React.Component{
                 }
                 </ScrollView>
             </View>
-            <Text style={styles.headingBanner}>
+            <Text style={[styles.headingBanner, {backgroundColor: this.state.bgColor, color: this.state.textcolor}]}>
                 Headlines
             </Text>
             {
@@ -134,7 +174,7 @@ export default class News extends React.Component{
                         // >
                         <Animated.View key={i} style={{transform: [
                           {translateX : this.pan[i].x},
-                        ]}}
+                        ],backgroundColor: this.state.bgColor}}
                         {...this.getResponder(i).panHandlers}
                         >
                               {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u})}>
@@ -150,17 +190,16 @@ export default class News extends React.Component{
                                 </ImageBackground>
                                 </SharedElement>
                               </TouchableOpacity> */}
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u})}>
-
-                              <View style={{flex: 1,flexDirection:'row',height: 137,marginTop:8,marginLeft:10}}>
+                            <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Back',{content: u,darkMode: this.state.darkMode})}>
+                              <View style={{flex: 1,flexDirection:'row',height: 120,marginTop:8,marginLeft:10}}>
                                   <SharedElement id={u.uri}>
-                                    <Image source={{uri : u.image}} style={{flex:3,height: 130,borderRadius:21, width: 200}}  />
+                                    <Image source={{uri : u.image}} style={{flex:3,height: 110,borderRadius:21, width: 150}}  />
                                   </SharedElement>
-                                  <Text style={[styles.headlinesText, {flex:9,color:"white",fontWeight:"100"}]}>
+                                  <Text fontWeight="900" style={[styles.headlinesText, {flex:9,color:this.state.textcolor}]}>
                                         {u.title}
                                   </Text>
                               </View>
-                              </TouchableOpacity>
+                              </TouchableWithoutFeedback>
 
                         </Animated.View>
                     );
@@ -202,14 +241,14 @@ const styles = StyleSheet.create({
     //position: "absolute",
     top: 0,
     width : width,
-    height: 168,
+    height: height -370,
   },
   topText: {
     //flex : 1,
     bottom: 0,
     backgroundColor :"rgba(212,212,180,0.5)", 
     fontSize: 20,
-    marginTop : 100,
+    marginTop : "50%",
     marginBottom : 0,
     paddingLeft : 20,
     fontFamily : "sans-serief",
@@ -217,13 +256,11 @@ const styles = StyleSheet.create({
     textAlignVertical:"bottom",
   },
   items : {
-    width : width- 16,
+    width : width,
     //borderWidth: 2,
-    marginLeft : 8,
-    marginRight: 8,
     marginTop: 8,
     //borderRadius: 21,
-    height: 158,
+    height: "100%",
     shadowColor: 'blue',
     shadowOpacity: 0.3,
     elevation: 50,
@@ -231,14 +268,13 @@ const styles = StyleSheet.create({
   },
   
   itemsImage: {
-    width : width- 16,
-    height: 158,
+    height: "100%",
     //borderRadius: 21,
   },
   headingBanner: {
     fontSize: 25,
-    marginLeft: 30,
-    color: 'white',
+    paddingLeft: 30,
+    //color: 'black', //night mode
     // marginTop:0,
     fontFamily: "Numans-Regular",
 
@@ -266,22 +302,15 @@ const styles = StyleSheet.create({
     marginTop: 13,
     //borderRadius : 21,
     //overlayColor : '#282828',
-    backgroundColor: "#C3C1C1",
   },
   headlinesText: {
     fontSize: 18,
     marginLeft: 20,
     marginTop : 10,
     borderRadius: 21,
-    fontFamily : "sans-serief",
+    //fontFamily : "sans-serief",
     fontWeight: "bold",
     //height: 137,
     //backgroundColor: "rgba(0, 0, 15, 0.5)"
   },
-  publisher: {
-    marginLeft: width - 180,
-    fontSize: 16,
-    color: "#423F3F",
-    marginTop: 10,
-  }
 })

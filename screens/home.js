@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
-import {} from 'react-navigation-shared-element'
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element'
 import AsyncStorage from '@react-native-community/async-storage'
 // import {createAppContainer} from 'react-navigation';
@@ -26,10 +25,13 @@ function wait(timeout) {
 }
 
 
-
 function homeScreen(props)  {
     const [content, setContent] = React.useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
+    const [colorScheme ,setcolorScheme] = React.useState("white");
+    const [darkMode, setDarkmode] = React.useState(false);
+    const [textColor, setTextColor] = React.useState("black")
+
 
     React.useEffect( () => {
       fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=20&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
@@ -48,16 +50,22 @@ function homeScreen(props)  {
       // console.log(content)
       
     },[]);
-    // AsyncStorage.setItem(
-    //   'storedData',
-    //   JSON.stringify(content),
-    // )
-    // AsyncStorage.getItem(
-    //   'storedData',
-    //   (err,result) => {
-    //     console.log(result);
-    //   }
-    // )
+    function lightMode(){
+      if(darkMode)
+      {
+        setcolorScheme("#C4C1C1");
+        setDarkmode(false)
+        setTextColor("black");
+        console.log("Dark mode");
+      }
+      else
+      {
+        setcolorScheme("#282828");
+        setTextColor("white");
+        setDarkmode(true);
+        console.log("light mode");
+      }
+    }
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
       fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=20&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
@@ -80,7 +88,7 @@ function homeScreen(props)  {
     // const { navigate } = props.navigation
     return (
       <ScrollView 
-      style={{backgroundColor:"#282828"}} //282828
+      style={{backgroundColor:colorScheme}} //282828
       onSwipeableOpen = {
       () => {
           console.log("swipe is working!")
@@ -90,40 +98,32 @@ function homeScreen(props)  {
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
   >   
-      <News content={content} navigation={props.navigation}/>
+      <View style={[styles.HeaderStyles, {backgroundColor : colorScheme}]}>
+        <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:textColor,fontWeight:"400"}}> News App </Text>
+        <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={textColor} />  
+      </View>
+      <News darkMode={darkMode} content={content} navigation={props.navigation}/>
       </ScrollView>
       
        
     )
   }
+  
 const stack =  createSharedElementStackNavigator();
-function lightMode(){
-  console.log("light Mode")
-}
+
 function DetailStack() {
   return (
     
     <stack.Navigator 
-    
+      headerMode= "none"
     >
       <stack.Screen name='News App' component={homeScreen}
         options= {{
           title: "News App",
-          //headerTransparent:true,
-          header: ({ scene, previous, navigation }) => {
-            const { options } = scene.descriptor;
-            return (
-              <View style={styles.HeaderStyles}>
-                <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:"white",fontWeight:"bold"}}> {options.title} </Text>
-                <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={"white"} />
-                </View>
-            )
-          },
         }}
       />
       <stack.Screen name='Back' component={detailView}
         sharedElements={(route, otherRoute, showing) => {
-          //console.log(route.params.content.uri)
           return [route.params.content.uri];
         }}
         options = {{
@@ -132,17 +132,6 @@ function DetailStack() {
           cardStyleInterpolator: ({current : {progress}}) => {
               return {cardStyle : { opacity : progress}}
           },
-          header: ({ scene, previous, navigation }) => {
-            const { options } = scene.descriptor;
-            return (
-              <View style={{flexDirection:"row",paddingTop: 20,paddingBottom: 10,}}>
-                <FontAwesome5 style={{flex:9,marginLeft:20,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "left",color:"black"}} onPress={() => navigation.goBack()} name="arrow-left" size={20} color={"white"} />
-                <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={"white"} />
-                
-                {/* <FontAwesome5 name="moon" color="black" size="20" /> */}
-              </View>
-            )
-          }
         }}
       />
     </stack.Navigator>
@@ -153,11 +142,10 @@ var height = Dimensions.get('window').height; //full height
 const styles = StyleSheet.create({
   HeaderStyles: {
     //flex:10,
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 10,
+    paddingBottom: 8,
     flexDirection: "row",
     //height: 100,
-    backgroundColor: "#282828",
     //zIndex:2,
   },
   headingText: {
