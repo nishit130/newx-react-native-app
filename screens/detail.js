@@ -5,6 +5,7 @@ import { SharedElement } from 'react-navigation-shared-element';
 import { Easing } from 'react-native-reanimated';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import Snackbar from 'react-native-snackbar'
  
 export default class detailView extends Component {
   constructor(props){
@@ -66,6 +67,12 @@ export default class detailView extends Component {
           }
         })
       )
+      Snackbar.show({
+        text: 'Article Bookmarked!',
+        textColor: "white",
+        backgroundColor: "green",
+        duration: Snackbar.LENGTH_SHORT,
+      });
     }
     return (
       <View>
@@ -136,5 +143,6 @@ const styles =  StyleSheet.create({
     fontSize: 19,
     textAlign: 'left',
     fontFamily: 'Numans-Regular',
+    marginBottom: 65,
   }
 })

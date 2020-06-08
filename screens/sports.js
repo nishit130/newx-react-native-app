@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, ScrollView , Dimensions, Image, TouchableOpacity} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
+import News from '../component/news'
 
 // import {createAppContainer} from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
@@ -21,69 +22,8 @@ class sportsScreen extends React.Component  {
               News App
            </Text>
        </View> */}
-       <View  style={styles.visibleArea}>
-         <ScrollView 
-          horizontal={true}
-          contentContainerStyle={{ width: `300%` }}
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={200}
-          decelerationRate="fast"
-          >
-            <View style={styles.items}>
-              <Image style={styles.itemsImage} source={{uri: 'https://images.pexels.com/photos/1324544/pexels-photo-1324544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'}}/>
-            </View>
-            <View style={styles.items}>
-            <Image style={styles.itemsImage} source={{uri: 'https://images.pexels.com/photos/1324544/pexels-photo-1324544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'}}/>
-            </View>
-            <View style={styles.items}>
-            <Image  style={styles.itemsImage} source={{uri: 'https://images.pexels.com/photos/1324544/pexels-photo-1324544.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'}}/>
-            </View>
-         </ScrollView>
-       </View>
-       <Text style={styles.headingBanner}>
-         Sports Headings
-       </Text>
-       <View style={styles.headlines}>
-         <TouchableOpacity onPress={() => navigate('Back',{name: "Patel",})}>
-            <Text style={styles.headlinesText}>
-              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.publisher}>
-            Times of India
-          </Text>
-       </View>
-       <View style={styles.headlines}>
-       <TouchableOpacity onPress={() => navigate('Back')}>
-            <Text style={styles.headlinesText}>
-              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.publisher}>
-            Times of India
-          </Text>
-       </View>
-       <View style={styles.headlines}>
-       <TouchableOpacity onPress={() => navigate('Back')}>
-            <Text style={styles.headlinesText}>
-              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.publisher}>
-            Times of India
-          </Text>
-       </View>
-       <View style={styles.headlines}>
-       <TouchableOpacity onPress={() => navigate('Back',{name:'Nishit'})}>
-            <Text style={styles.headlinesText}>
-              India's Covid 19 fatality rate has reduced from 3.3% to 2.87% today; lowest in the world: Health Ministry
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.publisher}>
-            Times of India
-          </Text>
-       </View>
        </ScrollView>
+
        
     )
   }

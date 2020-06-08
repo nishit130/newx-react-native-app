@@ -34,6 +34,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+
 //registerScreens();
 const Tab = createBottomTabNavigator();
 
@@ -71,6 +72,7 @@ function MyTabs() {
       <Tab.Screen 
         name="settings" 
         component={settingsScreen} 
+        initialParams={{key : 2}}
         options = {{
           tabBarLabel : "Offline",
           tabBarIcon : ({color,size}) => (

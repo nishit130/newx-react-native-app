@@ -23,16 +23,28 @@ function wait(timeout) {
 function settingView(props) {
   
   const [content, setContent] = React.useState([]);
-  const [keys, setKeys] = React.useState([])
+  const [darkMode, setdarkMode] = React.useState([])
   let content2= [];
   const [refreshing, setRefreshing] = React.useState(false);
+  const [bgcolor,setbgcolor] = React.useState(" ");
 
   
   
 React.useEffect( async () => {
     
-    let key = await AsyncStorage.getAllKeys()
-    setContent(key)
+    AsyncStorage.getAllKeys().then((keys) => setContent(keys))
+    //setContent(key)
+    AsyncStorage.getItem("darkMode").then((value) => {
+      setdarkMode(value)
+      if(value == "true")
+      {
+        setbgcolor("#282828");
+      }
+      else{
+        setbgcolor("#C3C2C2")
+      }
+      
+    })
       //setKeys(key)
       //console.log("he");
       
@@ -62,6 +74,17 @@ React.useEffect( async () => {
       let key = await AsyncStorage.getAllKeys()
       setContent(key)
       console.log("refreshing", content);
+      AsyncStorage.getItem("darkMode").then((value) => {
+        setdarkMode(value);
+        if(value == "true")
+        {
+          setbgcolor("#282828");
+        }
+        else{
+          setbgcolor("#C3C2C2")
+        }
+        
+      })
       wait(2000).then(() => setRefreshing(false));
     }, [refreshing]);
   // componentDidMount(){
@@ -85,12 +108,12 @@ React.useEffect( async () => {
     return (
       
        <ScrollView 
-        style={{backgroundColor:"wheat"}}
+        style={{backgroundColor:bgcolor}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-         <Bookmarklist  data={content} navigation={props.navigation}/>
+         <Bookmarklist key={darkMode}  data={content} navigation={props.navigation}/>
        </ScrollView>
     );
   }
@@ -99,7 +122,7 @@ const stack =  createStackNavigator();
 function DetailStack() {
   return (
     
-    <stack.Navigator>
+    <stack.Navigator headerMode="none">
       <stack.Screen name='Bookmarks' component={settingView}
         options= {{
           headerStyle : {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button, Appearance} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element'
@@ -23,6 +23,7 @@ function wait(timeout) {
     setTimeout(resolve, timeout);
   });
 }
+const colorScheme = Appearance.getColorScheme();
 
 
 function homeScreen(props)  {
@@ -46,7 +47,7 @@ function homeScreen(props)  {
         console.error(error);
       });
       AsyncStorage.getItem("darkMode").then((u) => setDarkmode(u)).then(() => {
-          if(darkMode == "true")
+        if(darkMode == "true")
         {
           setcolorScheme("#C4C1C1");
           setTextColor("black");
@@ -62,6 +63,25 @@ function homeScreen(props)  {
           AsyncStorage.setItem("darkMode", "true")
           console.log("light mode");
         }
+      }).catch(() => {
+        if(colorScheme == "dark")
+        {
+          setcolorScheme("#282828");
+          setTextColor("white");
+          setDarkmode("true")
+          AsyncStorage.setItem("darkMode", "true")
+          console.log("light mode");
+        }
+        else
+        {
+          setcolorScheme("#C4C1C1");
+          setTextColor("black");
+          setDarkmode("false");
+          AsyncStorage.setItem("darkMode", "false")
+          console.log("Dark mode");
+        }
+        console.log("no saved data");
+        
       })
       return () => clearInterval();
       // setContent({hello: "name"});
@@ -123,7 +143,7 @@ function homeScreen(props)  {
         <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:textColor,fontWeight:"400"}}> News App </Text>
         <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={textColor} />  
       </View>
-      <News key={darkMode} content={content} navigation={props.navigation}/>
+      <News key={darkMode} heading={"Headlines"} banner={true} content={content} navigation={props.navigation}/>
       </ScrollView>
       
        

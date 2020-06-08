@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,Image, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
+import { StyleSheet, View,Image, Text, ScrollView , Dimensions,ToastAndroid, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage'
 // import {createAppContainer} from 'react-navigation';
@@ -8,6 +8,7 @@ import { Header } from 'react-native/Libraries/NewAppScreen';
 import {PanResponder, Animated} from 'react-native'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import { ThemeConsumer } from 'styled-components';
+import News from "./news" 
 
 export default class Bookmarklist extends Component {
   constructor(props){
@@ -16,6 +17,9 @@ export default class Bookmarklist extends Component {
       data : new Array(),
       prevProps: [],
       prevState: [],
+      darkMode : "",
+      bgColor : "",
+      textcolor : "",
     }
     
     console.log("data recived in bookmark: ",this.props.data);
@@ -46,34 +50,16 @@ export default class Bookmarklist extends Component {
           //console.log(store[i][1])
           arr.push(JSON.parse(store[i][1]));
           joined = this.state.data.concat(arr);
-          
         })
         this.setState({data : arr})
       })
     })
-    //  AsyncStorage.multiGet(this.props.data).then((res) => {
-    //   let arr = new Array();
-    //   let joined = [];
-    //   res.map((result,i,store) => {
-
-    //     arr.push(JSON.parse(store[i][1]));
-    //     //console.log(store[i][1])
-    //     joined = this.state.data.concat(arr);
-    //     //console.log(joined)
-    //   })
-    //   this.setState({data : joined})
-    // })
+    ToastAndroid.show("Refresh to get latest Bookmarks", ToastAndroid.SHORT)
+    console.log("bookmarks mounted!")
     console.log("data recived in bookmark: ",this.props.data);
 
   }
 
-  // getSnapshotBeforeUpdate(prevProps, prevState)
-  // {
-  //     this.setState({
-  //       prevProps: prevProps,
-  //       prevState: prevState,
-  //     })
-  // }
   shouldComponentUpdate(nextprops,state){
 
       console.log("data length ",this.state.data.length)
@@ -98,64 +84,14 @@ export default class Bookmarklist extends Component {
     else{
       return false;
     }
-    
-    // AsyncStorage.multiGet(nextprops.data).then((res) => {
-    //   let arr = new Array();
-    //   let joined = [];
-    //   res.map((result,i,store) => {
-
-    //     arr.push(JSON.parse(store[i][1]));
-    //     //console.log(store[i][1])
-    //     joined = this.state.data.concat(arr);
-    //     //console.log(joined)
-    //   })
-    //   this.setState({data : joined})
-    // }).catch((err)=> console.log(err))
   }
 
 
   render() {
-    //console.log(this.state.data.length)
 
-    // AsyncStorage.multiGet(this.props.keys,(err,stores) => {
-        
-    // }).then((stores) => {stores.map((result,i,store) => {
-    //   //console.log(store[i][1])
-    //   var arr = new Array();
-    //   arr.push(JSON.parse(store[i][1]));
-    //   var joined = this.state.data.concat(arr);
-    //   this.setState({data : joined})
-    // })}) 
-    //console.log("data prop",this.props.data[0].uri)
-    //console.log("data prop",this.state.data)
 
-    return (
-      
-       <ScrollView  style={{backgroundColor:"wheat"}}>
-         {
-           
-           //console.log("data lenght ",this.state.data.length)
-           
-           this.state.data.map((u,i) => {
-              //console.log(u.title)
-              return(
-                <ImageBackground key={i} imageStyle={{ borderRadius: 21,opacity:0.4}}
-                                  source={{uri : u.image}} style={styles.headlines}>
-                                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u.body ,title: u.title,image : u.image})}>
-                                          <Text style={styles.headlinesText}>
-                                          {u.title}
-                                          </Text>
-                                      </TouchableOpacity>
-                                      <Text style={styles.publisher}>
-                                          {u.title}
-                                      </Text>
-                </ImageBackground>
-              );
-              
-            })
-          
-          }
-       </ScrollView>
+    return (                    
+          <News key={1} banner={false} heading={"Bookmarks"} content={this.state.data} navigation={this.props.navigation} />          
     )
   }
 }

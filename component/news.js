@@ -1,10 +1,12 @@
 import styled from 'styled-components/native'
 import React ,{Component} from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList,TouchableWithoutFeedback, TouchableOpacity, ImageBackground, RefreshControl, PickerIOSComponent, Image} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList,TouchableWithoutFeedback, TouchableOpacity, ImageBackground, RefreshControl, ToastAndroid, Image, Alert} from 'react-native';
 import {PanResponder, Animated } from 'react-native'
 import Swipeout from 'react-native-swipeout';
 import AsyncStorage from '@react-native-community/async-storage'
 import { SharedElement } from 'react-navigation-shared-element';
+import Snackbar from 'react-native-snackbar';
+
 
 
 
@@ -26,6 +28,18 @@ export default class News extends React.Component{
               textcolor : "",
             }  
             
+            this.visible_area = {
+              top: 0,
+              width : width,
+              height: height -370,
+            }
+            if (!this.props.banner) {
+              this.visible_area = {
+                top : 0,
+                width: 0,
+                height: 0,
+              }
+            }
         }
         changeScreens(u){
           //console.log(u);
@@ -77,24 +91,54 @@ export default class News extends React.Component{
               ], {
                 useNativeDriver: false,
                 listener: (evt,gestureState) => {
-                  if(gestureState.dx >100 || gestureState.dx < -100)
+                  if(this.props.banner)
                   {
+                    if(gestureState.dx >100 || gestureState.dx < -100)
+                    {
 
-                    AsyncStorage.setItem(
-                      this.props.content[index].uri.toString(),
-                      JSON.stringify(this.props.content[index]),
-                    )
-                    AsyncStorage.getItem(
-                      index.toString(),
-                      (err,result) => {
-                        //console.log(result);
-                      }
-                    )
-                    console.log("bookmark");
-                    Animated.spring(this.pan[index],{
-                      toValue: 0,
-                      useNativeDriver: false,
-                    },{useNativeDriver: false}).start();
+                      AsyncStorage.setItem(
+                        this.props.content[index].uri.toString(),
+                        JSON.stringify(this.props.content[index]),
+                      )
+                      //Alert.alert("Bookmarked!")
+                      AsyncStorage.getItem(
+                        index.toString(),
+                        (err,result) => {
+                          //console.log(result);
+                        }
+                      )
+                      Snackbar.show({
+                        text: 'Article Bookmarked!',
+                        textColor: "white",
+                        backgroundColor: "green",
+                        duration: Snackbar.LENGTH_SHORT,
+                      });
+                      console.log("bookmark");
+                      Animated.spring(this.pan[index],{
+                        toValue: 0,
+                        useNativeDriver: false,
+                      },{useNativeDriver: false}).start();
+                    }
+                  }
+                  else{
+                    if(gestureState.dx >100 || gestureState.dx < -100)
+                    {
+
+                      AsyncStorage.removeItem(
+                        this.props.content[index].uri.toString(),
+                      )
+                      Snackbar.show({
+                        text: 'Removed Bookmark!',
+                        textColor: "white",
+                        backgroundColor: "red",
+                        duration: Snackbar.LENGTH_SHORT,
+                      });
+                      console.log("deted ",this.props.content[index].uri);
+                      Animated.spring(this.pan[index],{
+                        toValue: 0,
+                        useNativeDriver: false,
+                      },{useNativeDriver: false}).start();
+                    }
                   }
                 },
                 useNativeDriver : false
@@ -107,11 +151,13 @@ export default class News extends React.Component{
           });
         }
     render(){
+     
         return(
 
 
            <View>
-            <View  style={styles.visibleArea}>
+             <Text style={[{color: "green",fontSize:0,textAlign: "center",},{opacity:1}]}>Bookmarked sucessfull!</Text>
+            <View  style={this.visible_area}>
                 <ScrollView 
                 horizontal={true}
                 contentContainerStyle={{ width: `400%` }}
@@ -120,31 +166,31 @@ export default class News extends React.Component{
                 decelerationRate="fast"
                 pagingEnabled={true}
                 >
-                    {
-                    this.props.content.map((u, i) => {
-                        if(u.image)
-                        {
-                        return (
-                            <TouchableOpacity key={i} style={styles.items} onPress={() => this.changeScreens(u)}>
-                              <SharedElement id={u.uri}>
-                              <ImageBackground style={styles.itemsImage} source={{uri:u.image }}>
-                                  <Text style={[styles.topText]}>{u.title}</Text>
-                              </ImageBackground>
-                              </SharedElement>
-                            </TouchableOpacity>
-                        );
-                        }
-                    })
+                  {
+                      this.props.content.map((u, i) => {
+                          if(u.image && this.props.banner)
+                          {
+                          return (
+                              <TouchableOpacity key={i} style={styles.items} onPress={() => this.changeScreens(u)}>
+                                <SharedElement id={u.uri}>
+                                <ImageBackground style={styles.itemsImage} source={{uri:u.image }}>
+                                    <Text style={[styles.topText]}>{u.title}</Text>
+                                </ImageBackground>
+                                </SharedElement>
+                              </TouchableOpacity>
+                          );
+                          }
+                      })
                 }
                 </ScrollView>
             </View>
             <Text style={[styles.headingBanner, {backgroundColor: this.state.bgColor, color: this.state.textcolor}]}>
-                Headlines
+                {this.props.heading}
             </Text>
             {
                 //console.log(data)
                 this.props.content.map((u, i) => {
-                    if(u.image && i > 4) 
+                    if(u.image && (i > 4 || !this.props.banner)) 
                     {
                     return (
                         // <Swipeable 
@@ -195,7 +241,6 @@ const styles = StyleSheet.create({
     fontFamily: "Numans-Regular",
   },
   visibleArea : {
-    top: 0,
     width : width,
     height: height -370,
   },
