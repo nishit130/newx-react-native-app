@@ -21,15 +21,15 @@ export default class News extends React.Component{
               display : {
                 display : "flex",
               },
-              darkMode : this.props.darkMode,
+              darkMode : "",
               bgColor : "",
-              textcolor : "pink",
+              textcolor : "",
             }  
             
         }
         changeScreens(u){
           //console.log(u);
-          this.props.navigation.navigate('Back',{content: u, darkMode : this.state.darkMode});
+          this.props.navigation.navigate('Back',{content: u});
           this.setState({
             display : {
               display : "none",
@@ -37,52 +37,36 @@ export default class News extends React.Component{
           })
           
         }
-        shouldComponentUpdate(nextprops, state)
-        {
-          //console.log(nextprops);
-          
-          if(this.props != nextprops){
-            if(!nextprops.darkMode)
+        componentDidMount(){
+          AsyncStorage.getItem("darkMode").then((u) => {
+            this.setState({
+              darkMode : u,
+            })
+          }).then((p) => {
+            if(this.state.darkMode == "true")
             {
                 this.setState({
-                  darkMode: nextprops.darkMode,
+                  darkMode: "true",
                   bgColor : "#282828",
                   textcolor : "white",
                 })
-                console.log("light mode from news")
+                console.log("cdm light mode from news")
             }
             else{
               this.setState({
-                darkMode: nextprops.darkMode,
+                darkMode: "false",
                 bgColor : "#C3C1C1",
                 textcolor : "black",
               })
+              console.log("cdm dark mode from news")
             }
-            return true;
-          }
-          else{
-            return false;
-          }
-        }
-        componentDidMount(){
+
+          })
           
-          if(!this.props.darkMode)
-          {
-              this.setState({
-                darkMode: this.props.darkMode,
-                bgColor : "#282828",
-                textcolor : "white",
-              })
-              console.log("cdm light mode from news")
-          }
-          else{
-            this.setState({
-              darkMode: this.props.darkMode,
-              bgColor : "#C3C1C1",
-              textcolor : "black",
-            })
-            console.log("cdm dark mode from news")
-          }
+          
+          
+          console.log("mounted news");
+          
         }
         getResponder(index){
           return PanResponder.create({
@@ -123,11 +107,6 @@ export default class News extends React.Component{
           });
         }
     render(){
-        //console.log("hello")
-        //const { navigate } = this.props.navigation
-        // const navigation = useNavigation();
-        
-        
         return(
 
 
@@ -177,19 +156,6 @@ export default class News extends React.Component{
                         ],backgroundColor: this.state.bgColor}}
                         {...this.getResponder(i).panHandlers}
                         >
-                              {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Back',{content: u})}>
-                                <SharedElement id={u.uri}>
-                                <ImageBackground imageStyle={{opacity:0.4}}
-                                source={{uri : u.image}} style={styles.headlines}>
-                                        <Text style={styles.headlinesText}>
-                                        {u.title}
-                                        </Text>
-                                    <Text style={styles.publisher}>
-                                        {u.source.title}
-                                    </Text>
-                                </ImageBackground>
-                                </SharedElement>
-                              </TouchableOpacity> */}
                             <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Back',{content: u,darkMode: this.state.darkMode})}>
                               <View style={{flex: 1,flexDirection:'row',height: 120,marginTop:8,marginLeft:10}}>
                                   <SharedElement id={u.uri}>
@@ -206,15 +172,6 @@ export default class News extends React.Component{
                     }
                 })
                 }
-                                      {/* <Animated.View style={{transform: [
-                                          {translateX : this.state.pan.x},
-                                        ]}}
-                                        {...this._panResponder.panHandlers}
-                                        >  
-                                    <View style={{margin:100,backgroundColor:"pink"}}>
-                                        <Text>dragable</Text>
-                                    </View> 
-                                </Animated.View>  */}
                                 
             </View>
         );
@@ -238,7 +195,6 @@ const styles = StyleSheet.create({
     fontFamily: "Numans-Regular",
   },
   visibleArea : {
-    //position: "absolute",
     top: 0,
     width : width,
     height: height -370,

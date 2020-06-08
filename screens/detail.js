@@ -19,60 +19,32 @@ export default class detailView extends Component {
       fillVisibility : {
         opacity : 0,
       },
-      darkMode : this.props.darkMode,
       bgColor : "",
       textcolor : "",
+      headlineColor: "",
     }
   }
-
-  // shouldComponentUpdate(nextprops, state)
-  // {   
-           
-  //   if(nextprops){
-  //     console.log(nextprops);
-  //     if(nextprops.darkMode)
-  //     {
-  //         this.setState({
-  //           darkMode: nextprops.darkMode,
-  //           bgColor : "#282828",
-  //           textcolor : "white",
-  //         })
-  //         console.log("light mode from details")
-  //     }
-  //     else{
-  //       this.setState({
-  //         darkMode: nextprops.darkMode,
-  //         bgColor : "#C3C1C1",
-  //         textcolor : "black",
-  //       })
-  //       console.log("light mode from details")
-  //     }
-  //     return true;
-  //   }
-  //   else{
-  //     return false;
-  //   }
-  // }
   componentDidMount()
   {
-    console.log(this.props)
-    if(this.props.darkMode)
-    {
+    console.log("details mounted")
+    AsyncStorage.getItem("darkMode").then((u) => {
+      if(u == "true")
+      {
+          this.setState({
+            bgColor : "#282828",
+            textcolor : "white",
+            headlineColor : "#C9BFF2"
+          })
+      }
+      else{
         this.setState({
-          darkMode: this.props.darkMode,
-          bgColor : "#282828",
-          textcolor : "white",
+          bgColor : "#C3C1C1",
+          textcolor : "black",
+          headlineColor : "blue",
         })
-        console.log("light mode from dtsils")
-    }
-    else{
-      this.setState({
-        darkMode: this.props.darkMode,
-        bgColor : "#C3C1C1",
-        textcolor : "black",
-      })
-      console.log("dark from dtsils")
-    }
+      }
+    })
+    
   }
   render() {
     const { navigate } = this.props.navigation
@@ -122,7 +94,7 @@ export default class detailView extends Component {
           <SharedElement id={this.state.content.uri}>
           <Image style={styles.banner} source={{uri: this.state.content.image}}/>
           </SharedElement>
-          <Text style={styles.heading}>
+          <Text style={[styles.heading, {color: this.state.headlineColor}]}>
             {this.state.content.title}
          </Text>
           <Text style={[styles.content, {color: this.state.textcolor}]}>
@@ -155,7 +127,6 @@ const styles =  StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     marginTop : 22,
-    color: "#C9BFF2",
     fontFamily: "sans-serief",
   },
   content: {

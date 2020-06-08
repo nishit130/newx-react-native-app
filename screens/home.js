@@ -29,7 +29,7 @@ function homeScreen(props)  {
     const [content, setContent] = React.useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
     const [colorScheme ,setcolorScheme] = React.useState("white");
-    const [darkMode, setDarkmode] = React.useState(false);
+    const [darkMode, setDarkmode] = React.useState("false");
     const [textColor, setTextColor] = React.useState("black")
 
 
@@ -45,26 +45,47 @@ function homeScreen(props)  {
       .catch((error) => {
         console.error(error);
       });
+      AsyncStorage.getItem("darkMode").then((u) => setDarkmode(u)).then(() => {
+          if(darkMode == "true")
+        {
+          setcolorScheme("#C4C1C1");
+          setTextColor("black");
+          setDarkmode("false");
+          AsyncStorage.setItem("darkMode", "false")
+          console.log("Dark mode");
+        }
+        else
+        {
+          setcolorScheme("#282828");
+          setTextColor("white");
+          setDarkmode("true")
+          AsyncStorage.setItem("darkMode", "true")
+          console.log("light mode");
+        }
+      })
       return () => clearInterval();
       // setContent({hello: "name"});
       // console.log(content)
       
     },[]);
     function lightMode(){
-      if(darkMode)
+      if(darkMode == "true")
       {
         setcolorScheme("#C4C1C1");
-        setDarkmode(false)
         setTextColor("black");
+        setDarkmode("false");
+        AsyncStorage.setItem("darkMode", "false")
         console.log("Dark mode");
       }
       else
       {
         setcolorScheme("#282828");
         setTextColor("white");
-        setDarkmode(true);
+        setDarkmode("true")
+        AsyncStorage.setItem("darkMode", "true")
         console.log("light mode");
       }
+      
     }
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
@@ -102,7 +123,7 @@ function homeScreen(props)  {
         <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:textColor,fontWeight:"400"}}> News App </Text>
         <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={textColor} />  
       </View>
-      <News darkMode={darkMode} content={content} navigation={props.navigation}/>
+      <News key={darkMode} content={content} navigation={props.navigation}/>
       </ScrollView>
       
        
