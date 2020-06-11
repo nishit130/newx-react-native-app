@@ -15,6 +15,7 @@ import sportScreen from './screens/sports';
 import settingsScreen from './screens/settings';
 import detailView from './screens/detail';
 import registerScreens from './screens/register';
+import SplashScreen from 'react-native-splash-screen'
 import React from 'react';
 import {
   SafeAreaView,
@@ -59,7 +60,7 @@ function MyTabs() {
           )
         }}
       />
-      <Tab.Screen 
+      {/* <Tab.Screen 
         name="Sports" 
         component={sportScreen} 
         options = {{
@@ -68,7 +69,7 @@ function MyTabs() {
             <FontAwesome5 name="table-tennis" color={color} size={size} />
           )
         }}
-      />
+      /> */}
       <Tab.Screen 
         name="settings" 
         component={settingsScreen} 
@@ -86,6 +87,9 @@ function MyTabs() {
 
 
 const App: () => React$Node = () => {
+  React.useEffect(() => {
+    SplashScreen.hide()
+  })
   return (
       <NavigationContainer>
         <MyTabs/>

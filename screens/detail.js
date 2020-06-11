@@ -45,6 +45,23 @@ export default class detailView extends Component {
         })
       }
     })
+    AsyncStorage.getItem(this.state.content.uri.toString()).then((result) =>
+    {
+      if(result)
+      {
+        this.setState({
+          visibility: {
+            opacity : 0,
+          },
+          fillVisibility : {
+            opacity : 1,
+          }
+        })
+      }
+    }
+    ).catch(
+      console.log("article is not bookmarked")
+    )
     
   }
   render() {
@@ -54,25 +71,46 @@ export default class detailView extends Component {
       outputRange: ['rgba(77, 74, 74, 0)', 'rgba(77, 74, 74, 1)'],
     });
     const bookmarkFunction = () => {
-      AsyncStorage.setItem(
-        this.state.content.uri.toString(),
-        JSON.stringify(this.state.content),
-      ).then(
-        this.setState({
-          visibility: {
-            opacity :0,
-          },
-          fillVisibility: {
-            opacity :1,
-          }
+      if(this.state.visibility.opacity)
+      {
+        AsyncStorage.setItem(
+          this.state.content.uri.toString(),
+          JSON.stringify(this.state.content),
+        ).then(
+          this.setState({
+            visibility: {
+              opacity :0,
+            },
+            fillVisibility: {
+              opacity :1,
+            }
+          })
+        )
+        Snackbar.show({
+          text: 'Article Bookmarked!',
+          textColor: "white",
+          backgroundColor: "green",
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      }
+      else{
+        AsyncStorage.removeItem(this.state.content.uri.toString()).then(
+          this.setState({
+            visibility: {
+              opacity :1,
+            },
+            fillVisibility: {
+              opacity :0,
+            }
+          })
+        )
+        Snackbar.show({
+          text: "Bookmark removed!",
+          textColor: "white",
+          backgroundColor: "red",
+          duration: Snackbar.LENGTH_SHORT,
         })
-      )
-      Snackbar.show({
-        text: 'Article Bookmarked!',
-        textColor: "white",
-        backgroundColor: "green",
-        duration: Snackbar.LENGTH_SHORT,
-      });
+      }
     }
     return (
       <View>

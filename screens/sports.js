@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, ScrollView , Dimensions, Image, TouchableOpacit
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import News from '../component/news'
-
 // import {createAppContainer} from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 
