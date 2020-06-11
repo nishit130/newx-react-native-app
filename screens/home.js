@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button, Appearance} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button, Appearance, Image} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element'
@@ -29,7 +29,7 @@ const colorScheme = Appearance.getColorScheme();
 function homeScreen(props)  {
     const [content, setContent] = React.useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
-    const [colorScheme ,setcolorScheme] = React.useState("white");
+    const [colorScheme ,setcolorScheme] = React.useState("");
     const [darkMode, setDarkmode] = React.useState("false");
     const [textColor, setTextColor] = React.useState("black")
 
@@ -140,7 +140,8 @@ function homeScreen(props)  {
       }
   >   
       <View style={[styles.HeaderStyles, {backgroundColor : colorScheme}]}>
-        <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:textColor,fontWeight:"400"}}> News App </Text>
+        <Image style={{flex:1,top:0,marginLeft:10,height:35,width:35}} source={require('../assets/fonts/images/logo_round.png')}/>
+        <Text style={{flex:7,fontSize: 20,fontFamily:"Numans-Regular",textAlign: "center",color:textColor,fontWeight:"400"}}> NewsX </Text>
         <FontAwesome5 style={{flex:1,position:"relative",right:0}} onPress={lightMode} name="moon" size={20} color={textColor} />  
       </View>
       <News key={darkMode} heading={"Headlines"} banner={true} content={content} navigation={props.navigation}/>

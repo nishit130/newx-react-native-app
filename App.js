@@ -5,26 +5,14 @@
  * @format
  * @flow strict-local
  */
-import 'react-native-gesture-handler';
-import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
-// import {createAppContainer} from 'react-navigation';
 import {NavigationContainer} from '@react-navigation/native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import HomeView from './screens/home';
-import sportScreen from './screens/sports';
 import settingsScreen from './screens/settings';
-import detailView from './screens/detail';
-import registerScreens from './screens/register';
 import SplashScreen from 'react-native-splash-screen'
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Image,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {
