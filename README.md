@@ -39,10 +39,23 @@ To clone and run this application, you'll need [Git](https://git-scm.com) instal
 #### This project still has scope of development, so you can also contribute to this Project as follows:
 * [Fork](https://github.com/nis130/newx-react-native-app) this Repository
 * Clone your Fork on a different branch:
-	* `git clone -b <name-of-branch> https://github.com/nis130/newx-react-native-app.git`
+```
+	$ git clone -b <name-of-branch> https://github.com/nis130/newx-react-native-app.git
+	
+	$ cd newx-react-native-app
+	
+	#install all dependencies
+	$ yarn install/ npm install
+	
+	#run app
+	$ npx react-native run-android
+	
+```
+	
+	`
 * After adding any feature:
 	* Goto your fork and create a pull request.
-	* We will test your modifications and merge changes.
+	* I will test your modifications and merge changes.
 
 ### Contributors
 
