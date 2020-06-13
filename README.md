@@ -24,6 +24,7 @@
 </div>
 
 
+### Download link for apk file [Google Drive](https://drive.google.com/file/d/1zAFSQJ_3ctGec9_TZswVhX2VytEr8nIE/view?usp=sharing)
 
 ## 🎉 Key Features
 
@@ -31,7 +32,7 @@
 * ### Bookmark/Offline Mode -
     - Caching of the bookmared articles for offline mode using react-native AsyncStorage
 * ### Cross platform
-  - Android, Ios ready.
+  - Android, Ios compatible.
 
 ## 📖 Contribution Docs
 
@@ -51,8 +52,7 @@ To clone and run this application, you'll need [Git](https://git-scm.com) instal
 	$ npx react-native run-android
 	
 ```
-	
-	`
+* Add the News api url in home.js
 * After adding any feature:
 	* Goto your fork and create a pull request.
 	* I will test your modifications and merge changes.
