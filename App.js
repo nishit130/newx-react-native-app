@@ -12,22 +12,18 @@ import settingsScreen from './screens/settings';
 import SplashScreen from 'react-native-splash-screen'
 import React from 'react';
 import {
-  StyleSheet,
+  StyleSheet, PermissionsAndroid
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+
 
 
 //registerScreens();
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+
+  
   return (
     <Tab.Navigator
       tabBarOptions= {{

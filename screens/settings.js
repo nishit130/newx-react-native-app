@@ -27,11 +27,10 @@ function settingView(props) {
   let content2= [];
   const [refreshing, setRefreshing] = React.useState(false);
   const [bgcolor,setbgcolor] = React.useState(" ");
-
+  const _isMounted = React.useRef(true);
   
   
-React.useEffect( async () => {
-    
+React.useEffect(  () => {
     AsyncStorage.getAllKeys().then((keys) => setContent(keys))
     //setContent(key)
     AsyncStorage.getItem("darkMode").then((value) => {
@@ -51,7 +50,9 @@ React.useEffect( async () => {
       //console.log("ran effect sport");
       
     //});
-     return () => clearInterval();
+    return () => { // ComponentWillUnmount in Class Component
+      _isMounted.current = false;
+  }
     // setContent({hello: "name"});
     //console.log(keys)
     

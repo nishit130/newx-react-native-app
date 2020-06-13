@@ -11,7 +11,7 @@ import Snackbar from 'react-native-snackbar';
 
 
 export default class News extends React.Component{
-
+  _isMounted = false;
     constructor(props)
         {
             super(props);
@@ -24,8 +24,8 @@ export default class News extends React.Component{
                 display : "flex",
               },
               darkMode : "",
-              bgColor : "",
-              textcolor : "",
+              bgColor : "#282828",
+              textcolor : "white",
             }  
             
             this.visible_area = {
@@ -52,6 +52,7 @@ export default class News extends React.Component{
           
         }
         componentDidMount(){
+          this._isMounted = true;
           AsyncStorage.getItem("darkMode").then((u) => {
             this.setState({
               darkMode : u,
@@ -82,15 +83,24 @@ export default class News extends React.Component{
           console.log("mounted news");
           
         }
+        componentWillUnmount() {
+          this._isMounted = false;
+        }      
         getResponder(index){
           return PanResponder.create({
-              onMoveShouldSetPanResponder: (evt, gestureState) => true,
-              onPanResponderMove: Animated.event([
+              onMoveShouldSetPanResponder: (evt, gestureState) => {
+                  if(gestureState.dx>10 || gestureState.dx < -10)
+                  {
+                    return true;
+                  }
+              },
+              onPanResponderMove: (evt, gestureState) => { Animated.event([
                 null,
                 {dx : this.pan[index].x}
               ], {
                 useNativeDriver: false,
                 listener: (evt,gestureState) => {
+                  console.log(gestureState)
                   if(this.props.banner)
                   {
                     if(gestureState.dx >100 || gestureState.dx < -100)
@@ -116,8 +126,8 @@ export default class News extends React.Component{
                       console.log("bookmark");
                       Animated.spring(this.pan[index],{
                         toValue: 0,
-                        useNativeDriver: false,
-                      },{useNativeDriver: false}).start();
+                        useNativeDriver : false,
+                      }).start();
                     }
                   }
                   else{
@@ -137,16 +147,17 @@ export default class News extends React.Component{
                       Animated.spring(this.pan[index],{
                         toValue: 0,
                         useNativeDriver: false,
-                      },{useNativeDriver: false}).start();
+                      }).start();
                     }
                   }
                 },
-                useNativeDriver : false
-              },),
+                })(evt, gestureState);
+            },
               onPanResponderRelease : () => {
                 Animated.spring(this.pan[index],{
-                  toValue: 0
-                },{useNativeDriver: false}).start();
+                  toValue: 0,
+                  useNativeDriver: false,
+                }).start();
               }                
           });
         }

@@ -21,8 +21,8 @@ export default class detailView extends Component {
         opacity : 0,
       },
       bgColor : "",
-      textcolor : "",
-      headlineColor: "",
+      textcolor : "black",
+      headlineColor: "black",
     }
   }
   componentDidMount()

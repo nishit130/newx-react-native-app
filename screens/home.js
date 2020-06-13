@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, ImageBackground, RefreshControl, Button, Appearance, Image} from 'react-native';
+import { StyleSheet, View, Text, ScrollView , Dimensions,SectionList, TouchableOpacity, PermissionsAndroid, RefreshControl, Button, Appearance, Image} from 'react-native';
 import detailView from './detail';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element'
@@ -25,6 +25,14 @@ function wait(timeout) {
 }
 const colorScheme = Appearance.getColorScheme();
 
+const requestCameraPermission = async () => {
+  PermissionsAndroid.check("android.permission.INTERNET").then((e) => console.log(e))
+  try {
+    const granted = await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE])
+  } catch (err) {
+    console.warn(err);
+  }
+};
 
 function homeScreen(props)  {
     const [content, setContent] = React.useState([]);
@@ -35,7 +43,7 @@ function homeScreen(props)  {
 
 
     React.useEffect( () => {
-      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=20&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
+      fetch('news_api')
         .then((response) => response.json())
         .then((responseJson) => {
           //console.log(responseJson.articles.results)
@@ -109,7 +117,8 @@ function homeScreen(props)  {
     }
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
-      fetch('http://eventregistry.org/api/v1/article/getArticlesForTopicPage?uri=6915b75b-011e-4572-9fad-014860138af5&dataType=news&resultType=articles&articlesCount=20&articlesSortBy=date&articleBodyLen=-1&apiKey=403be9f7-e4ec-4921-9731-760931ded360')
+      requestCameraPermission()
+      fetch('news_api')
         .then((response) => response.json())
         .then((responseJson) => {
           //console.log(responseJson.articles.results)

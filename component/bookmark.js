@@ -2,15 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, View,Image, Text, ScrollView , Dimensions,ToastAndroid, TouchableOpacity, ImageBackground, RefreshControl} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage'
-// import {createAppContainer} from 'react-navigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { Header } from 'react-native/Libraries/NewAppScreen';
-import {PanResponder, Animated} from 'react-native'
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import { ThemeConsumer } from 'styled-components';
 import News from "./news" 
 
 export default class Bookmarklist extends Component {
+  _isMounted = false;
   constructor(props){
     super(props);
     this.state = {
@@ -18,8 +13,8 @@ export default class Bookmarklist extends Component {
       prevProps: [],
       prevState: [],
       darkMode : "",
-      bgColor : "",
-      textcolor : "",
+      bgColor : "black",
+      textcolor : "black",
     }
     
     console.log("data recived in bookmark: ",this.props.data);
@@ -34,12 +29,21 @@ export default class Bookmarklist extends Component {
           joined = this.state.data.concat(arr);
           
         })
-        this.setState({data : arr})
+        if(this._isMounted)
+        {
+          this.setState({data : arr})
+        }
       })
     })
 
   }
+  
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidMount(){
+    this._isMounted = true;
     //AsyncStorage.clear()
     AsyncStorage.getAllKeys((err,keys) => {
     }).then(keys => {
@@ -51,7 +55,10 @@ export default class Bookmarklist extends Component {
           arr.push(JSON.parse(store[i][1]));
           joined = this.state.data.concat(arr);
         })
-        this.setState({data : arr})
+        if(this._isMounted)
+        {
+          this.setState({data : arr})
+        }
       })
     })
     ToastAndroid.show("Refresh to get latest Bookmarks", ToastAndroid.SHORT)
@@ -59,6 +66,8 @@ export default class Bookmarklist extends Component {
     console.log("data recived in bookmark: ",this.props.data);
 
   }
+
+  
 
   shouldComponentUpdate(nextprops,state){
 
@@ -76,7 +85,10 @@ export default class Bookmarklist extends Component {
             joined = this.state.data.concat(arr);
             
           })
-          this.setState({data : arr})
+          if(this._isMounted)
+          {
+            this.setState({data : arr})
+          }
         })
       })
       return true;
