@@ -10,8 +10,6 @@
 <p align="center">
     <img href="#how-to-use" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=round-square"
          alt="PR">
-    <img href="http://hits.dwyl.com/nis130/newsx-react-native-app" src="http://hits.dwyl.com/nis130/newsx-react-native-app.svg"
-         alt="hits">
 </p>
 
 <p align="center">
